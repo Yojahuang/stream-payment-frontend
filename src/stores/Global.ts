@@ -20,9 +20,8 @@ export const useGlobalStore = defineStore('global', () => {
     }
 
     watch(selectedChain, async () => {
-        const chain = new Chain()
         const chainInfo = chainInfoMap[selectedChain.value]
-        await chain.switchChain(
+        await Chain.switchChain(
             chainInfo.chainId,
             chainInfo.rpcUrl,
             selectedChain.value,
