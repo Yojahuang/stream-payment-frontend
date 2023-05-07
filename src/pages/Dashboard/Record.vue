@@ -13,6 +13,7 @@
                 </v-progress-circular>
             </v-progress-circular>
         </div>
+        <v-btn color="primary">Claim payment</v-btn>
     </div>
 </template>
 
