@@ -10,7 +10,7 @@
         <v-text-field v-model="paymentDetail.title"></v-text-field>
 
         <div class="font-weight-bold">
-            Payee
+            Payee Address
         </div>
         <v-text-field :rules="addressRule" v-model="paymentDetail.payee"></v-text-field>
 
@@ -37,11 +37,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from "vue"
+import { onMounted, reactive, computed } from "vue"
 import { Global } from "@/composables/Global"
+import Wallet from "@/composables/Wallet"
 import { useDisplay } from "vuetify"
 
 const { smAndDown } = useDisplay()
+
+onMounted(async () => {
+    const wallet = new Wallet()
+    await wallet.connect()
+})
 
 const paymentDetail = reactive({
     title: "",
@@ -65,7 +71,11 @@ const isDark = computed(() => {
 
 const addressRule = [
     (value: string) => {
-        if (value.length != 42) return "Not a valid address"
+        if (value.length != 42 && value.slice(0, 2) != "0x") return "Not a valid address"
+        const validCharSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+        for (let i = 2; i < 42; ++i) {
+            if (validCharSet.indexOf(value[i].toLowerCase()) == -1) return "Not a valid address"
+        }
         return true
     },
 ]

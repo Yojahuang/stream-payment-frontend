@@ -85,11 +85,17 @@ import { storeToRefs } from 'pinia'
 import { useRecordStore } from '@/stores/Record'
 import { Global } from "@/composables/Global"
 import { useDisplay } from 'vuetify'
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
+import Wallet from "@/composables/Wallet"
 
 const tab = ref("Not started")
 
 const { xs } = useDisplay()
 
 const { records } = storeToRefs(useRecordStore())
+
+onMounted(async () => {
+    const wallet = new Wallet()
+    await wallet.connect()
+})
 </script>

@@ -5,7 +5,6 @@ import { useGlobalStore } from "@/stores/Global"
 import Chain from '@/composables/Chain'
 
 export default class Wallet {
-
     connect = async () => {
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
