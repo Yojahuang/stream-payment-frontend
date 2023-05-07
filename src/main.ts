@@ -10,38 +10,8 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import { createPinia } from 'pinia'
 
-const dark = {
-    dark: true,
-    colors: {
-        background: '#0f0f0f',
-        primary: '#8746cb',
-        secondary: '#daa152',
-        danger: '#bb2124',
-        success: '#22bb33',
-        warning: '#f0ad4e',
-        info: '#5bc0de',
-    },
-}
-
-const light = {
-    dark: false,
-    colors: {
-        background: '#eee',
-        primary: '#66319c',
-        secondary: '#915d16',
-        danger: '#bb2124',
-        success: '#22bb33',
-        warning: '#f0ad4e',
-        info: '#5bc0de',
-    },
-}
-
 const theme = {
     defaultTheme: 'dark',
-    // themes: {
-    //     dark,
-    //     light
-    // },
 }
 
 // Two breakpoint
