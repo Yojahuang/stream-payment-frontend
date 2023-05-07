@@ -3,7 +3,7 @@
         <div class="font-weight-bold ml-5 text-white" @click="Global.navigateTo('')">Stream Payment</div>
         <div class="d-flex align-center justify-begin">
             <v-btn class="text-white" @click="toggleTheme()" icon="mdi-theme-light-dark" variant="text"></v-btn>
-            <v-btn class="mx-2 text-white" variant="tonal" v-if="address == ''" @click="connectWallet()">Connect</v-btn>
+            <v-btn class="mx-2 text-white" variant="tonal" v-if="userAddress == ''" @click="connectWallet()">Connect</v-btn>
             <v-btn class="mx-2 text-white" variant="text" v-else @click="openSettingDialog()" icon="mdi-account"></v-btn>
             <v-btn class="text-white" @click="toggleMenu()" icon="mdi-menu" variant="text"></v-btn>
         </div>
@@ -45,7 +45,8 @@ const toggleTheme = () => {
 }
 
 const wallet = new Wallet()
-const address = wallet.address
+
+const { userAddress } = storeToRefs(useGlobalStore())
 
 const connectWallet = async () => {
     await wallet.connect()

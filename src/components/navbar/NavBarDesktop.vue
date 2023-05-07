@@ -5,7 +5,7 @@
     </div>
     <div class="d-flex justify-start align-center">
         <v-btn class="mx-2 text-white" @click="toggleTheme()" icon="mdi-theme-light-dark" variant="text"></v-btn>
-        <v-btn class="mx-2 text-white" variant="tonal" v-if="address == ''" @click="connectWallet()">Connect</v-btn>
+        <v-btn class="mx-2 text-white" variant="tonal" v-if="isConnected" @click="connectWallet()">Connect</v-btn>
         <v-btn class="mx-2 text-white" variant="text" v-else @click="openSettingDialog()" prepend-icon="mdi-account">{{
             beautifyAddress
         }}</v-btn>
@@ -35,18 +35,22 @@ const openSettingDialog = () => {
 }
 
 const wallet = new Wallet()
-const address = wallet.address
-
-const connectWallet = async () => {
-    await wallet.connect()
-}
+const { userAddress } = storeToRefs(useGlobalStore())
 
 const beautifyAddress = computed(() => {
-    const addr = address.value
+    const addr = userAddress.value
     if (addr == '') return ''
     const length = addr.length
     return addr.substring(0, 4) + '...' + addr.substring(length - 4, length)
 })
+
+const isConnected = computed(() => {
+    return beautifyAddress.value == ""
+})
+
+const connectWallet = async () => {
+    await wallet.connect()
+}
 </script>
 
 <style scoped></style>

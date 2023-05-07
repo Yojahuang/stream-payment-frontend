@@ -5,7 +5,6 @@ import { useGlobalStore } from "@/stores/Global"
 import Chain from '@/composables/Chain'
 
 export default class Wallet {
-    address = ref<string>('')
 
     connect = async () => {
         const ethereum = (window as any).ethereum
@@ -33,16 +32,11 @@ export default class Wallet {
         const providerURL = provider.connection.url
 
         const address = await provider.getSigner().getAddress()
-        this.address.value = address
+        const { userAddress } = storeToRefs(useGlobalStore())
+        userAddress.value = address
 
         localStorage.setItem('address', address)
         localStorage.setItem('providerURL', providerURL)
-    }
-
-    getAddress = () => {
-        const address = localStorage.getItem('address')
-        if (address) this.address.value = address
-        return this.address.value
     }
 
     getProvider = () => {
@@ -69,6 +63,7 @@ export default class Wallet {
     disconnect = () => {
         localStorage.removeItem('address')
         localStorage.removeItem('providerURL')
-        this.address.value = ''
+        const { userAddress } = storeToRefs(useGlobalStore())
+        userAddress.value = ''
     }
 }

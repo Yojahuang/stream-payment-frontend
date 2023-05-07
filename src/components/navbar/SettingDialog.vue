@@ -26,13 +26,12 @@ import Wallet from '@/composables/Wallet'
 import Global from "@/composables/Global"
 import { Chain, chains } from "@/composables/Chain"
 
-const { settingDialog, selectedChain } = storeToRefs(useGlobalStore())
+const { userAddress, settingDialog, selectedChain } = storeToRefs(useGlobalStore())
 
 const wallet = new Wallet()
 
 const beautifyAddress = computed(() => {
-    const wallet = new Wallet()
-    const addr = wallet.getAddress()
+    const addr = userAddress.value
     if (addr == '') return ''
     const length = addr.length
     return addr.substring(0, 4) + '...' + addr.substring(length - 4, length)
