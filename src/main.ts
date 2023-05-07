@@ -25,7 +25,8 @@ const light = {
     dark: false,
     colors: {
         primary: "#ff6f43",
-        secondary: "#4db6ab"
+        secondary: "#4db6ab",
+        background: "#eee"
     }
 }
 
