@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { ref, toRaw } from 'vue'
+import { toRaw } from 'vue'
 import { storeToRefs } from "pinia"
 import { useGlobalStore } from "@/stores/Global"
 import Chain from '@/composables/Chain'
