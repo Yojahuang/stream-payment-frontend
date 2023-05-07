@@ -8,7 +8,8 @@ export default class Global {
     }
 
     static navigateTo = (prefix: string) => {
-        router.push(`/${prefix}`)
+        const base = 'stream-payment-frontend'
+        router.push(`/${base}/${prefix}`)
     }
 
     static currentThemeIsDark = () => {
