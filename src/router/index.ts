@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue'
 import Dashboard from '@/pages/Dashboard/Dashboard.vue'
 import Record from '@/pages/Dashboard/Record.vue'
+import CreateRecord from '@/pages/Dashboard/CreateRecord.vue'
 
 let history = createWebHistory()
 let routes = [
@@ -14,6 +15,11 @@ let routes = [
         path: '/dashboard',
         name: 'Dashboard',
         component: Dashboard,
+    },
+    {
+        path: '/dashboard/new',
+        name: 'CreateRecord',
+        component: CreateRecord,
     },
     {
         path: '/dashboard/:id',

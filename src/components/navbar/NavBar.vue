@@ -14,18 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from 'vuetify'
 import { computed } from "vue"
 import { useDisplay } from 'vuetify'
+import { Global } from "@/composables/Global"
 import NavBarDesktop from '@/components/navbar/NavBarDesktop.vue'
 import NavBarMobile from '@/components/navbar/NavBarMobile.vue'
 
 const { md, smAndDown } = useDisplay()
 
-const theme = useTheme()
-
 const navbarStyle = computed(() => {
-  if (theme.global.current.value.dark) {
+  if (Global.currentThemeIsDark()) {
     return '#66319c'
   } else {
     return '#8746cb'
