@@ -38,10 +38,10 @@ const light = {
 
 const theme = {
     defaultTheme: 'dark',
-    themes: {
-        dark,
-        light
-    },
+    // themes: {
+    //     dark,
+    //     light
+    // },
 }
 
 // Two breakpoint
@@ -65,7 +65,7 @@ const display = {
 const vuetify = createVuetify({
     components,
     directives,
-    // theme,
+    theme,
     display
 })
 

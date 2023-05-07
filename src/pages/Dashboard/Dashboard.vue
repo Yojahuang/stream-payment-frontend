@@ -1,6 +1,6 @@
 <template>
     <div class="mx-auto" :style="{ 'width': xs ? '360px' : '500px' }">
-        <v-btn color="secondary" class="my-2" prepend-icon="mdi-plus">Create payment</v-btn>
+        <v-btn color="secondary" class="my-2" prepend-icon="mdi-plus">Create new payment</v-btn>
         <v-tabs v-model="tab" bg-color="primary">
             <v-tab value="Not started">Not started</v-tab>
             <v-tab value="Ongoing">Ongoing</v-tab>

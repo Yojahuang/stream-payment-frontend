@@ -37,10 +37,10 @@ export default class Chain {
 
     static getChainImage = (chain: chain) => {
         if (chain == 'ThunderCore Testnet') {
-            return 'thundercore_testnet.png'
+            return 'chains/thundercore_testnet.png'
         }
-        return 'thundercore_testnet.png'
+        return 'chains/thundercore_testnet.png'
     }
 }
 
-export { Chain, type chain }
+export { Chain, type chain, chains }

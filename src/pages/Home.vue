@@ -5,9 +5,9 @@
         </div>
         <div class="text-center text-h3 mb-4">About us</div>
         <div class="d-flex w-full align-center justify-center mx-auto">
-            <Avatar class="mx-10" fullname="You-Jia Huang" filename="YJH-avatar.jpeg" nickname="@YJH"
+            <Avatar class="mx-10" fullname="You-Jia Huang" filename="avatars/YJH-avatar.jpeg" nickname="Yojahuang"
                 github_link="https://github.com/Yojahuang"></Avatar>
-            <Avatar class="mx-10" fullname="Pei-Fan Chen" filename="PFC-avatar.jpg" nickname="@PFC"
+            <Avatar class="mx-10" fullname="Pei-Fan Chen" filename="avatars/PFC-avatar.jpg" nickname="yoonaiu"
                 github_link="https://github.com/yoonaiu"></Avatar>
         </div>
     </div>

@@ -11,32 +11,20 @@
         }}</v-btn>
     </div>
 
-    <v-dialog v-model="settingDialog">
-        <v-card width="400" class="mx-auto p-2">
-            <v-select class="my-2 text-white" hide-details="auto" v-model="selectedChain" density="comfortable"
-                :items="['ThunderCore Testnet']">
-                <template v-slot:selection="{ item }">
-                    <v-avatar size="25" :image="Global.getImageURL(Chain.getChainImage(item.value))"></v-avatar>
-                </template>
-            </v-select>
-            <v-btn class="mx-2" color="danger" v-if="address != ''" @click="disconnectWallet()">Disconnect</v-btn>
-        </v-card>
-    </v-dialog>
+    <SettingDialog />
 </template>
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import { computed, ref } from "vue"
+import { computed } from "vue"
 import { useGlobalStore } from "@/stores/Global"
 import { storeToRefs } from "pinia"
+import SettingDialog from './SettingDialog.vue'
 import Wallet from "@/composables/Wallet"
 import Global from "@/composables/Global"
-import Chain from "@/composables/Chain"
-
-const settingDialog = ref(false)
 
 const theme = useTheme()
-const { selectedChain } = storeToRefs(useGlobalStore())
+const { settingDialog } = storeToRefs(useGlobalStore())
 
 const toggleTheme = () => {
     theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
@@ -59,11 +47,6 @@ const beautifyAddress = computed(() => {
     const length = addr.length
     return addr.substring(0, 4) + '...' + addr.substring(length - 4, length)
 })
-
-const disconnectWallet = () => {
-    wallet.disconnect()
-    settingDialog.value = false
-}
 </script>
 
 <style scoped></style>

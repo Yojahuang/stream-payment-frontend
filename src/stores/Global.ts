@@ -7,6 +7,8 @@ export const useGlobalStore = defineStore('global', () => {
 
     const shouldBeDisabled = ref(false)
 
+    const settingDialog = ref(false)
+
     const chainInfoMap = {
         'ThunderCore Testnet': {
             chainId: 18,
@@ -31,5 +33,5 @@ export const useGlobalStore = defineStore('global', () => {
         localStorage.setItem('selectedChain', selectedChain.value)
     })
 
-    return { selectedChain, chainInfoMap, shouldBeDisabled }
+    return { selectedChain, chainInfoMap, shouldBeDisabled, settingDialog }
 })

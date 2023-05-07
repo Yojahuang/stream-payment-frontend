@@ -6,7 +6,7 @@
             {{ props.fullname }}
         </div>
         <div class="w-full d-flex justify-center">
-            <v-chip color="primary" @click="openInNewTab(github_link)" class="mx-auto">
+            <v-chip color="primary" @click="openInNewTab(github_link)" prepend-icon="mdi-github" class="mx-auto">
                 {{ props.nickname }}
             </v-chip>
         </div>
