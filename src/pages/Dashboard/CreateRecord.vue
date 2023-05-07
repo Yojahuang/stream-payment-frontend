@@ -5,12 +5,17 @@
         </div>
 
         <div class="font-weight-bold">
+            Title
+        </div>
+        <v-text-field v-model="paymentDetail.title"></v-text-field>
+
+        <div class="font-weight-bold">
             Payee
         </div>
         <v-text-field :rules="addressRule" v-model="paymentDetail.payee"></v-text-field>
 
         <div class="font-weight-bold">
-            Token address
+            Token address (ERC20)
         </div>
         <v-text-field :rules="addressRule" v-model="paymentDetail.tokenAddress"></v-text-field>
 
@@ -39,6 +44,7 @@ import { useDisplay } from "vuetify"
 const { smAndDown } = useDisplay()
 
 const paymentDetail = reactive({
+    title: "",
     payee: "",
     tokenAddress: "",
     amount: 0,
@@ -46,6 +52,7 @@ const paymentDetail = reactive({
 })
 
 const clearForm = () => {
+    paymentDetail.title = ""
     paymentDetail.payee = ""
     paymentDetail.tokenAddress = ""
     paymentDetail.amount = 0
@@ -58,7 +65,7 @@ const isDark = computed(() => {
 
 const addressRule = [
     (value: string) => {
-        if (value.length != 42) return "Not a valid ERC20 address"
+        if (value.length != 42) return "Not a valid address"
         return true
     },
 ]

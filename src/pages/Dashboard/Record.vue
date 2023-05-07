@@ -1,9 +1,9 @@
 <template>
     <div :class="{ 'w-75': !smAndDown, 'w-full': smAndDown, 'mx-auto': true }">
-        <div class="text-h4 text-md-h3 text-lg-h3">
+        <div class="text-h4 text-md-h3 text-lg-h3 my-2">
             {{ records[id].title }}
         </div>
-        <div class="d-flex mx-auto align-center justify-center">
+        <div class="d-flex mx-auto align-center justify-center my-2">
             <v-progress-circular :size="smAndDown ? 250 : 400" :width="15"
                 :model-value="(records[id].remainToken + records[id].withdraw) / records[id].all * 100" color="secondary">
                 <v-progress-circular :size="smAndDown ? 220 : 370" :width="15"
