@@ -13,8 +13,27 @@ import { createPinia } from 'pinia'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
+const dark = {
+    dark: true,
+    colors: {
+        primary: "#E64A19",
+        secondary: "#00897a"
+    }
+}
+
+const light = {
+    dark: false,
+    colors: {
+        primary: "#ff6f43",
+        secondary: "#4db6ab"
+    }
+}
+
 const theme = {
     defaultTheme: 'dark',
+    themes: {
+        dark, light
+    }
 }
 
 // Two breakpoint

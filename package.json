@@ -9,7 +9,7 @@
     "dev-host": "vite --host",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "vue-tsc && vite build && gh-pages -d dist"
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^5.0.1",
