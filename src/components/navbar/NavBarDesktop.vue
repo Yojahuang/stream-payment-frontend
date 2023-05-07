@@ -1,12 +1,12 @@
 <template>
     <div class="d-flex justify-start align-center">
-        <div class="font-weight-bold ml-5 mr-2 text-white">Stream Payment</div>
-        <v-btn class="mx-2 text-white" variant="text">Dashboard</v-btn>
+        <div class="font-weight-bold ml-5 mr-2 text-white" @click="Global.navigateTo('')">Stream Payment</div>
+        <v-btn class="mx-2 text-white" @click="Global.navigateTo('dashboard')" variant="text">Dashboard</v-btn>
     </div>
     <div class="d-flex justify-start align-center">
         <v-btn class="mx-2 text-white" @click="toggleTheme()" icon="mdi-theme-light-dark" variant="text"></v-btn>
-        <v-btn class="mx-2" variant="tonal" v-if="address == ''" @click="connectWallet()">Connect</v-btn>
-        <v-btn class="mx-2" variant="text" v-else @click="openSettingDialog()" prepend-icon="mdi-account">{{
+        <v-btn class="mx-2 text-white" variant="tonal" v-if="address == ''" @click="connectWallet()">Connect</v-btn>
+        <v-btn class="mx-2 text-white" variant="text" v-else @click="openSettingDialog()" prepend-icon="mdi-account">{{
             beautifyAddress
         }}</v-btn>
     </div>

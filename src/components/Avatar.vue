@@ -5,13 +5,19 @@
         <div class="mx-auto text-center font-weight-bold">
             {{ props.fullname }}
         </div>
-        <div class="mx-auto text-center">
-            {{ props.nickname }}
+        <div class="w-full d-flex justify-center">
+            <v-chip color="primary" @click="openInNewTab(github_link)" class="mx-auto">
+                {{ props.nickname }}
+            </v-chip>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import Global from "@/composables/Global"
-const props = defineProps(['fullname', 'nickname', 'filename'])
+const props = defineProps(['fullname', 'nickname', 'filename', 'github_link'])
+
+const openInNewTab = (url: string) => {
+    window.open(url, '_blank', 'noreferer')
+}
 </script>
