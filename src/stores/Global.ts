@@ -1,17 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import { Chain, chain } from '@/composables/Chain'
+import { Chain, chainName } from '@/composables/Chain'
+import { ChainInfoMap } from "@/types/ChainInfo"
 
 export const useGlobalStore = defineStore('global', () => {
-    const selectedChain = ref<chain>('ThunderCore Testnet')
-
-    const shouldBeDisabled = ref(false)
+    const selectedChain = ref<chainName>('ThunderCore Testnet')
 
     const settingDialog = ref(false)
 
     const userAddress = ref("")
 
-    const chainInfoMap = {
+    const chainInfoMap: ChainInfoMap = {
         'ThunderCore Testnet': {
             chainId: 18,
             rpcUrl: 'https://testnet-rpc.thundercore.com',
@@ -20,7 +19,12 @@ export const useGlobalStore = defineStore('global', () => {
                 symbol: 'TST',
                 decimals: 18,
             },
+            explorer: "https://explorer-testnet.thundercore.com/"
         },
+    }
+
+    const getExplorer = () => {
+        return chainInfoMap[selectedChain.value].explorer
     }
 
     watch(selectedChain, async () => {
@@ -35,5 +39,5 @@ export const useGlobalStore = defineStore('global', () => {
         localStorage.setItem('selectedChain', selectedChain.value)
     })
 
-    return { selectedChain, chainInfoMap, shouldBeDisabled, settingDialog, userAddress }
+    return { selectedChain, chainInfoMap, settingDialog, userAddress, getExplorer }
 })

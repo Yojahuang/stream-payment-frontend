@@ -4,7 +4,7 @@
             <v-card-item>
                 Wallet address: {{ beautifyAddress }}
                 <v-select class="my-2" hide-details="auto" v-model="selectedChain" density="comfortable"
-                    label="Select chains" :items="chains">
+                    label="Select chains" :items="chainNames">
                     <template v-slot:selection="{ item }">
                         <v-avatar size="25" :image="Global.getImageURL(Chain.getChainImage(item.value))"></v-avatar>
                     </template>
@@ -24,7 +24,7 @@ import { storeToRefs } from 'pinia'
 import { useGlobalStore } from '@/stores/Global'
 import Wallet from '@/composables/Wallet'
 import Global from "@/composables/Global"
-import { Chain, chains } from "@/composables/Chain"
+import { Chain, chainNames } from "@/composables/Chain"
 
 const { userAddress, settingDialog, selectedChain } = storeToRefs(useGlobalStore())
 

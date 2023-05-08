@@ -10,7 +10,7 @@
       <NavBarDesktop />
     </div>
   </div>
-  <v-divider class="mb-6"></v-divider>
+  <div class="mb-6"></div>
 </template>
 
 <script setup lang="ts">

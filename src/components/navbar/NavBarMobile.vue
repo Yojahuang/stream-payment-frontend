@@ -8,6 +8,7 @@
             <v-btn class="text-white" @click="toggleMenu()" icon="mdi-menu" variant="text"></v-btn>
         </div>
     </div>
+
     <div class="my-2" v-if="showMenu">
         <v-btn class="my-2 text-white" @click="Global.navigateTo('dashboard'); showMenu = false"
             variant="text">Dashboard</v-btn>
@@ -18,13 +19,12 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import { ref } from "vue"
 import { storeToRefs } from 'pinia'
+import { ref } from "vue"
 import { useGlobalStore } from '@/stores/Global'
 import SettingDialog from '@/components/navbar/SettingDialog.vue'
 import Wallet from "@/composables/Wallet"
 import { Global } from "@/composables/Global"
-
 
 const theme = useTheme()
 

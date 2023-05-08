@@ -1,5 +1,5 @@
-const chains = ['ThunderCore Testnet'] as const
-type chain = typeof chains[number]
+const chainNames = ['ThunderCore Testnet'] as const
+type chainName = typeof chainNames[number]
 
 export default class Chain {
     static switchChain = async (
@@ -35,7 +35,7 @@ export default class Chain {
         }
     }
 
-    static getChainImage = (chain: chain) => {
+    static getChainImage = (chain: chainName) => {
         if (chain == 'ThunderCore Testnet') {
             return 'chains/thundercore_testnet.png'
         }
@@ -43,4 +43,4 @@ export default class Chain {
     }
 }
 
-export { Chain, type chain, chains }
+export { Chain, type chainName, chainNames }
