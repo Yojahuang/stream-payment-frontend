@@ -36,22 +36,28 @@
             </v-window-item>
         </v-window>
     </div>
+
+    <v-overlay v-model="loading"></v-overlay>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useRecordStore } from '@/stores/Record'
-import { Global } from "@/composables/Global"
 import { useDisplay } from 'vuetify'
 import { ref, onMounted, reactive } from "vue"
+import { Global } from "@/composables/Global"
 import Wallet from "@/composables/Wallet"
 import StreamList from '@/components/StreamList.vue'
+import StreamPaymentContract from '@/composables/StreamPayment'
 
 const tab = ref("Not started")
 
 const { xs } = useDisplay()
 
+const streamStore = useRecordStore()
 const { records } = storeToRefs(useRecordStore())
+
+const loading = ref(false)
 
 const filter = reactive({
     showCreator: true,
@@ -59,7 +65,18 @@ const filter = reactive({
 })
 
 onMounted(async () => {
+    const streamPaymentContract = new StreamPaymentContract()
+    streamPaymentContract.init()
+
+    loading.value = true
+
     const wallet = new Wallet()
     await wallet.connect()
+
+    records.value = []
+    await streamStore.fetchStream(streamPaymentContract.getPayerStreamInfo)
+    await streamStore.fetchStream(streamPaymentContract.getReceiverStreamInfo)
+
+    loading.value = false
 })
 </script>

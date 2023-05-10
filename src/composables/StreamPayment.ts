@@ -100,10 +100,10 @@ export default class StreamPaymentContract {
 
         if (signer == null || this.streamPaymentContract == undefined) return
 
-        const tx = await this.streamPaymentContract
+        const result = await this.streamPaymentContract
             .connect(signer)
             .getPayerStreamInfo()
-        await this.waitTx(tx)
+        return result
     }
 
     getReceiverStreamInfo = async () => {
@@ -113,9 +113,9 @@ export default class StreamPaymentContract {
 
         if (signer == null || this.streamPaymentContract == undefined) return
 
-        const tx = await this.streamPaymentContract
+        const result = await this.streamPaymentContract
             .connect(signer)
             .getReceiverStreamInfo()
-        await this.waitTx(tx)
+        return result
     }
 }

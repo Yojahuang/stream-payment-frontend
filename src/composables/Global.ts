@@ -20,6 +20,10 @@ export default class Global {
             return false
         }
     }
+
+    static beautifyDateTime = (dateTime: Date) => {
+        return `${dateTime.getFullYear()}/${dateTime.getMonth() + 1}/${dateTime.getDate()} ${dateTime.getHours()}:${dateTime.getMinutes()}`
+    }
 }
 
 export { Global }

@@ -19,7 +19,7 @@
             </template>
             <template #append>
                 <v-chip prepend-icon="mdi-calendar-range">
-                    {{ item.startAt }}
+                    {{ Global.beautifyDateTime(item.startAt) }}
                 </v-chip>
             </template>
         </v-list-item>
