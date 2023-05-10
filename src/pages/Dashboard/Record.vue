@@ -33,7 +33,7 @@
             <v-btn @click="claimPayment()" color="primary">Claim payment</v-btn>
         </div>
 
-        <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">
+        <!-- <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">
             Transcation history
         </div>
 
@@ -62,7 +62,7 @@
                     </tr>
                 </tbody>
             </v-table>
-        </v-card>
+        </v-card> -->
     </div>
 </template>
 
@@ -102,13 +102,13 @@ interface Transcation {
 
 const transcations = ref<Transcation[]>([])
 
-const beautifyTxHash = (tx: string) => {
-    return tx.slice(0, 14) + "..."
-}
+// const beautifyTxHash = (tx: string) => {
+//     return tx.slice(0, 14) + "..."
+// }
 
-const beautifyAmount = (amount: number) => {
-    return amount.toFixed(6)
-}
+// const beautifyAmount = (amount: number) => {
+//     return amount.toFixed(6)
+// }
 
 const calcClaimeableAmount = computed(() => {
     const currentTimeRaw = currentTime.value
@@ -143,6 +143,7 @@ const checkClaimRule = [
     (value: string) => {
         const val = Number(value)
         if (Number.isNaN(val)) return "Please input a positive integer number"
+        if (!Number.isInteger(val)) return "Please input a positive integer number"
         if (val <= 0) return "Please input a positive number"
         if (val > calcClaimeableAmount.value) return "You can't withdraw more than you supposed to"
         return true
