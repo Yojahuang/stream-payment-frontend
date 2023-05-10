@@ -1,5 +1,6 @@
-import { BigNumberish, ethers } from 'ethers'
-import contractABI from '@/assets/StreamPayment.json'
+import { ethers } from 'ethers'
+import StreamPaymentABI from '@/assets/StreamPayment.json'
+import ERC20ABI from '@/assets/ERC20.json'
 import Wallet from '@/composables/Wallet'
 import { storeToRefs } from 'pinia'
 import { useGlobalStore } from '@/stores/Global'
@@ -14,15 +15,13 @@ export default class StreamPaymentContract {
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
 
         const { selectedChain } = storeToRefs(useGlobalStore())
-        
-        if (selectedChain.value == 'ThunderCore Testnet') {
-            this.address = '0xeB1E5618F28170408cd52b4fF788De6A2B6A8b0D'
-        }
+
+        this.address = '0xeB1E5618F28170408cd52b4fF788De6A2B6A8b0D'
 
         if (provider != null)
             this.streamPaymentContract = new ethers.Contract(
                 this.address,
-                contractABI,
+                StreamPaymentABI,
                 provider
             )
     }
@@ -30,6 +29,20 @@ export default class StreamPaymentContract {
     waitTx = async (tx: any) => {
         const receipt = await tx.wait()
         console.log(receipt)
+    }
+
+    approve = async (tokenAddress: string, totalAmount: BigInt) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const ERC20Contract = new ethers.Contract(
+            tokenAddress,
+            ERC20ABI,
+            provider
+        )
+
+        const signer = provider.getSigner()
+        const tx = await ERC20Contract.connect(signer).approve(this.address, totalAmount, this.option)
+        await this.waitTx(tx)
     }
 
     createStream = async (
@@ -40,6 +53,8 @@ export default class StreamPaymentContract {
         startTime: BigInt,
         endTime: BigInt
     ) => {
+        console.log('in')
+
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
         const signer = provider.getSigner()  // same with payer, but this is an object
@@ -58,7 +73,8 @@ export default class StreamPaymentContract {
                 tokenAddress,
                 totalAmount,
                 startTime,
-                endTime
+                endTime,
+                this.option
             )
         await this.waitTx(tx)
     }
@@ -77,7 +93,8 @@ export default class StreamPaymentContract {
             .connect(signer)
             .claimPayment(
                 streamID,
-                claimAmount
+                claimAmount,
+                this.option
             )
         await this.waitTx(tx)
     }

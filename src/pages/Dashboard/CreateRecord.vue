@@ -30,17 +30,20 @@
         <VueDatePicker v-model="paymentDetail.startAndEndDate" range :dark="isDark" />
 
         <div class="d-flex justify-end my-2">
-            <v-btn color="success" class="mx-2">Send</v-btn>
+            <v-btn color="success" @click="createStream()" class="mx-2">Send</v-btn>
             <v-btn color="error" @click="clearForm()">Clear</v-btn>
         </div>
     </div>
+
+    <v-overlay v-model="loading"></v-overlay>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, computed } from "vue"
+import { onMounted, ref, reactive, computed } from "vue"
 import { Global } from "@/composables/Global"
 import Wallet from "@/composables/Wallet"
 import { useDisplay } from "vuetify"
+import StreamPaymentContract from "@/composables/StreamPayment"
 
 const { smAndDown } = useDisplay()
 
@@ -56,6 +59,8 @@ const paymentDetail = reactive({
     amount: 0,
     startAndEndDate: ["", ""]
 })
+
+const loading = ref(false)
 
 const clearForm = () => {
     paymentDetail.title = ""
@@ -88,4 +93,23 @@ const PositiveIntegerRule = [
         return true
     },
 ]
+
+const createStream = async () => {
+    const streamPaymentContract = new StreamPaymentContract()
+    streamPaymentContract.init()
+
+    loading.value = true
+    await streamPaymentContract.approve(paymentDetail.tokenAddress,
+        BigInt(paymentDetail.amount))
+
+    const start = new Date(paymentDetail.startAndEndDate[0]).getTime() / 1000
+    const end = new Date(paymentDetail.startAndEndDate[1]).getTime() / 1000
+    await streamPaymentContract.createStream(paymentDetail.title,
+        paymentDetail.payee,
+        paymentDetail.tokenAddress,
+        BigInt(paymentDetail.amount),
+        BigInt(start),
+        BigInt(end))
+    loading.value = false
+}
 </script>
