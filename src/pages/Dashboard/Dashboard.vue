@@ -48,7 +48,6 @@ import { Global } from "@/composables/Global"
 import Wallet from "@/composables/Wallet"
 import StreamList from '@/components/StreamList.vue'
 import StreamPaymentContract from '@/composables/StreamPayment'
-import { watch } from 'vue'
 
 const tab = ref("Not started")
 
