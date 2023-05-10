@@ -14,7 +14,7 @@
             </template>
             <template #subtitle>
                 <v-chip class="mr-2" prepend-icon="mdi-cash">
-                    {{ item.remainToken }} / {{ item.all }}
+                    {{ item.withdraw }} / {{ item.all }}
                 </v-chip>
             </template>
             <template #append>

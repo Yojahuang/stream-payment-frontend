@@ -1,25 +1,25 @@
 <template>
     <div :class="{ 'w-75': !smAndDown, 'w-full': smAndDown, 'mx-auto': true }">
         <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">
-            {{ records[id].title }}
+            {{ record.title }}
         </div>
         <div class="d-flex mx-auto align-center justify-center my-2">
             <v-progress-circular :size="smAndDown ? 250 : 400" :width="15"
-                :model-value="(records[id].remainToken + records[id].withdraw) / records[id].all * 100" color="secondary">
+                :model-value="(calcClaimeableAmount) / record.all * 100" color="secondary">
                 <v-progress-circular :size="smAndDown ? 220 : 370" :width="15"
-                    :model-value="records[id].withdraw / records[id].all * 100" color="primary">
+                    :model-value="record.withdraw / record.all * 100" color="primary">
                     <v-progress-circular v-if="!smAndDown" :size="340" :width="0"
                         :color="Global.currentThemeIsDark() ? 'white' : 'black'">
-                        You had withdraw: {{ records[id].withdraw }} DAI <br />
-                        You can still withdraw: {{ records[id].remainToken }} DAI
+                        You had withdraw: {{ record.withdraw }} DAI <br />
+                        You can still withdraw: {{ record.remainToken }} DAI
                     </v-progress-circular>
                 </v-progress-circular>
             </v-progress-circular>
         </div>
 
         <div class="my-2" v-if="smAndDown">
-            You had withdraw: <div class="amount-of-money">{{ records[id].withdraw }}</div> DAI <br />
-            You can still withdraw: <div class="amount-of-money">{{ records[id].remainToken }}</div> DAI
+            You had withdraw: <div class="amount-of-money">{{ record.withdraw }}</div> DAI <br />
+            You can still withdraw: <div class="amount-of-money">{{ calcClaimeableAmount - record.withdraw }}</div> DAI
         </div>
 
         <v-btn color="primary">Claim payment</v-btn>
@@ -58,11 +58,10 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { useRecordStore } from '@/stores/Record'
 import { useRoute } from "vue-router"
 import { useDisplay } from 'vuetify'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useGlobalStore } from '@/stores/Global'
 import { Global } from "@/composables/Global"
 
@@ -70,9 +69,10 @@ const globalStore = useGlobalStore()
 
 const { smAndDown } = useDisplay()
 
-const { records } = storeToRefs(useRecordStore())
+const recordStore = useRecordStore()
 const router = useRoute()
 const id = Number(router.params.id)
+const record = ref<any>({ "id": -1, "title": "-1", "startAt": new Date("2023-05-11T13:14:00.000Z"), "endAt": new Date("2023-05-17T13:14:00.000Z"), "remainToken": 0, "all": 0, "withdraw": 0, "identity": "Creator" })
 
 interface Transcation {
     tx: string;
@@ -89,7 +89,20 @@ const beautifyAmount = (amount: number) => {
     return amount.toFixed(6)
 }
 
+const calcClaimeableAmount = computed(() => {
+    const startTime = Math.floor(record.value.startAt.getTime() / 1000);
+    const endTime = Math.floor(record.value.endAt.getTime() / 1000);
+
+    const currentTime = Math.floor(new Date().getTime() / 1000);
+
+    const result = record.value.all * (currentTime - startTime) / (endTime - startTime)
+
+    return result
+})
+
 onMounted(() => {
+    record.value = recordStore.getStreamById(id)
+
     for (let i = 0; i < 50; ++i) {
         let tx = "0x"
         for (let j = 0; j < 64; ++j) {
@@ -105,7 +118,6 @@ onMounted(() => {
         })
     }
 })
-
 </script>
 
 <style scoped>

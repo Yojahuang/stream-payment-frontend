@@ -24,5 +24,15 @@ export const useRecordStore = defineStore('record', () => {
             })
         })
     }
-    return { records, fetchStream }
+
+    const getStreamById = (id: number) => {
+        let result
+        records.value.forEach((record: any) => {
+            if (record.id == id) {
+                result = record
+            }
+        })
+        return result
+    }
+    return { records, getStreamById, fetchStream }
 })
