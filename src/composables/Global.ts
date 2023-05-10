@@ -22,7 +22,11 @@ export default class Global {
     }
 
     static beautifyDateTime = (dateTime: Date) => {
-        return `${dateTime.getFullYear()}/${dateTime.getMonth() + 1}/${dateTime.getDate()} ${dateTime.getHours()}:${dateTime.getMinutes()}`
+        return `${dateTime.getFullYear()}`.padStart(4, '0') + '/'
+            + `${dateTime.getMonth() + 1}`.padStart(2, '0') + '/'
+            + `${dateTime.getDate()}`.padStart(2, '0') + ' '
+            + `${dateTime.getHours()}`.padStart(2, '0')
+            + ':' + `${dateTime.getMinutes()}`.padStart(2, '0')
     }
 }
 
