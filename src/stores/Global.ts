@@ -39,5 +39,7 @@ export const useGlobalStore = defineStore('global', () => {
         localStorage.setItem('selectedChain', selectedChain.value)
     })
 
-    return { selectedChain, chainInfoMap, settingDialog, userAddress, getExplorer }
+    const loadingSemaphore = ref(0)
+
+    return { selectedChain, chainInfoMap, settingDialog, userAddress, getExplorer, loadingSemaphore }
 })

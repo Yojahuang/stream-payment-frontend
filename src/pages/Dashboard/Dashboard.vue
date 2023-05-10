@@ -36,13 +36,12 @@
             </v-window-item>
         </v-window>
     </div>
-
-    <v-overlay v-model="loading"></v-overlay>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useRecordStore } from '@/stores/Record'
+import { useGlobalStore } from '@/stores/Global'
 import { useDisplay } from 'vuetify'
 import { ref, onMounted, reactive } from "vue"
 import { Global } from "@/composables/Global"
@@ -57,7 +56,7 @@ const { xs } = useDisplay()
 const streamStore = useRecordStore()
 const { records } = storeToRefs(useRecordStore())
 
-const loading = ref(false)
+const { loadingSemaphore } = storeToRefs(useGlobalStore())
 
 const filter = reactive({
     showCreator: true,
@@ -68,7 +67,8 @@ onMounted(async () => {
     const streamPaymentContract = new StreamPaymentContract()
     streamPaymentContract.init()
 
-    loading.value = true
+    loadingSemaphore.value += 1
+
 
     const wallet = new Wallet()
     await wallet.connect()
@@ -77,6 +77,6 @@ onMounted(async () => {
     await streamStore.fetchStream(streamPaymentContract.getPayerStreamInfo)
     await streamStore.fetchStream(streamPaymentContract.getReceiverStreamInfo)
 
-    loading.value = false
+    loadingSemaphore.value -= 1
 })
 </script>

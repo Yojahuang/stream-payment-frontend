@@ -34,12 +34,12 @@
             <v-btn color="error" @click="clearForm()">Clear</v-btn>
         </div>
     </div>
-
-    <v-overlay v-model="loading"></v-overlay>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive, computed } from "vue"
+import { onMounted, reactive, computed } from "vue"
+import { storeToRefs } from "pinia"
+import { useGlobalStore } from "@/stores/Global"
 import { Global } from "@/composables/Global"
 import Wallet from "@/composables/Wallet"
 import { useDisplay } from "vuetify"
@@ -60,7 +60,7 @@ const paymentDetail = reactive({
     startAndEndDate: ["", ""]
 })
 
-const loading = ref(false)
+const { loadingSemaphore } = storeToRefs(useGlobalStore())
 
 const clearForm = () => {
     paymentDetail.title = ""
@@ -98,7 +98,7 @@ const createStream = async () => {
     const streamPaymentContract = new StreamPaymentContract()
     streamPaymentContract.init()
 
-    loading.value = true
+    loadingSemaphore.value += 1
     await streamPaymentContract.approve(paymentDetail.tokenAddress,
         BigInt(paymentDetail.amount))
 
@@ -110,6 +110,6 @@ const createStream = async () => {
         BigInt(paymentDetail.amount),
         BigInt(start),
         BigInt(end))
-    loading.value = false
+    loadingSemaphore.value -= 1
 }
 </script>
