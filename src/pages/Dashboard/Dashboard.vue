@@ -24,15 +24,15 @@
 
         <v-window v-model="tab">
             <v-window-item value="Not started">
-                <StreamList :records="records" />
+                <StreamList :records="NotStartedRecords" />
             </v-window-item>
 
             <v-window-item value="Ongoing">
-                <StreamList :records="records" />
+                <StreamList :records="OngoingRecords" />
             </v-window-item>
 
             <v-window-item value="Finished">
-                <StreamList :records="records" />
+                <StreamList :records="FinishedRecords" />
             </v-window-item>
         </v-window>
     </div>
@@ -43,11 +43,12 @@ import { storeToRefs } from 'pinia'
 import { useRecordStore } from '@/stores/Record'
 import { useGlobalStore } from '@/stores/Global'
 import { useDisplay } from 'vuetify'
-import { ref, onMounted, reactive } from "vue"
+import { ref, onMounted, reactive, computed } from "vue"
 import { Global } from "@/composables/Global"
 import Wallet from "@/composables/Wallet"
 import StreamList from '@/components/StreamList.vue'
 import StreamPaymentContract from '@/composables/StreamPayment'
+import { watch } from 'vue'
 
 const tab = ref("Not started")
 
@@ -55,6 +56,66 @@ const { xs } = useDisplay()
 
 const streamStore = useRecordStore()
 const { records } = storeToRefs(useRecordStore())
+
+const currentRecords = computed(() => {
+    const result: any[] = []
+    records.value.forEach((record: any) => {
+        if (record.identity == 'Creator' && filter.showCreator) {
+            result.push(record)
+        } else if (record.identity == 'Receiver' && filter.showReceiver) {
+            result.push(record)
+        }
+    })
+    return result
+})
+
+const NotStartedRecords = computed(() => {
+    const result: any = []
+    const records = currentRecords.value;
+
+    records.forEach((record: any) => {
+        const now = new Date().getTime()
+        const recordStartTime = record.startAt.getTime()
+
+        if (recordStartTime > now) {
+            result.push(record)
+        }
+    })
+    return result
+})
+
+const FinishedRecords = computed(() => {
+    const result: any = []
+    const records = currentRecords.value;
+
+    records.forEach((record: any) => {
+        const now = new Date().getTime()
+        const recordEndTime = record.endAt.getTime()
+
+        if (recordEndTime <= now) {
+            result.push(record)
+        }
+    })
+
+    return result
+})
+
+const OngoingRecords = computed(() => {
+    const result: any = []
+    const records = currentRecords.value;
+
+    records.forEach((record: any) => {
+        const now = new Date().getTime()
+        const recordStartTime = record.startAt.getTime()
+        const recordEndTime = record.endAt.getTime()
+
+        if (recordStartTime <= now && now <= recordEndTime) {
+            result.push(record)
+        }
+    })
+
+    return result
+})
 
 const { loadingSemaphore } = storeToRefs(useGlobalStore())
 

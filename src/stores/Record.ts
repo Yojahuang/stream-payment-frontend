@@ -23,8 +23,6 @@ export const useRecordStore = defineStore('record', () => {
                 identity: stream.payer == address ? 'Creator' : 'Receiver'
             })
         })
-
-        console.log(records.value)
     }
     return { records, fetchStream }
 })
