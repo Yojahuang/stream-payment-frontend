@@ -4,12 +4,12 @@
             new payment</v-btn>
 
         <div class="my-2 d-flex align-center">
-            <v-checkbox hide-details v-model="setting.creator">
+            <v-checkbox hide-details v-model="filter.showCreator">
                 <template #label>
                     <v-icon icon="mdi-account-cog" class="mx-2"></v-icon>Creator
                 </template>
             </v-checkbox>
-            <v-checkbox hide-details v-model="setting.receiver">
+            <v-checkbox hide-details v-model="filter.showReceiver">
                 <template #label>
                     <v-icon icon="mdi-hand-coin" class="mx-2"></v-icon>Receiver
                 </template>
@@ -53,9 +53,9 @@ const { xs } = useDisplay()
 
 const { records } = storeToRefs(useRecordStore())
 
-const setting = reactive({
-    creator: true,
-    receiver: true,
+const filter = reactive({
+    showCreator: true,
+    showReceiver: true,
 })
 
 onMounted(async () => {

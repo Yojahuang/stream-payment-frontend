@@ -8,11 +8,20 @@
                 :model-value="(records[id].remainToken + records[id].withdraw) / records[id].all * 100" color="secondary">
                 <v-progress-circular :size="smAndDown ? 220 : 370" :width="15"
                     :model-value="records[id].withdraw / records[id].all * 100" color="primary">
-                    You had withdraw: {{ records[id].withdraw }} DAI <br />
-                    You can still withdraw: {{ records[id].remainToken }} DAI
+                    <v-progress-circular v-if="!smAndDown" :size="340" :width="0"
+                        :color="Global.currentThemeIsDark() ? 'white' : 'black'">
+                        You had withdraw: {{ records[id].withdraw }} DAI <br />
+                        You can still withdraw: {{ records[id].remainToken }} DAI
+                    </v-progress-circular>
                 </v-progress-circular>
             </v-progress-circular>
         </div>
+
+        <div class="my-2" v-if="smAndDown">
+            You had withdraw: <div class="amount-of-money">{{ records[id].withdraw }}</div> DAI <br />
+            You can still withdraw: <div class="amount-of-money">{{ records[id].remainToken }}</div> DAI
+        </div>
+
         <v-btn color="primary">Claim payment</v-btn>
 
         <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">
@@ -40,7 +49,7 @@
                         <td v-else><a :href="`${globalStore.getExplorer()}/tx/${transcation.tx}`">{{
                             beautifyTxHash(transcation.tx) }}</a>
                         </td>
-                        <td>{{ transcation.amount }}</td>
+                        <td>{{ beautifyAmount(transcation.amount) }}...</td>
                     </tr>
                 </tbody>
             </v-table>
@@ -55,6 +64,7 @@ import { useRoute } from "vue-router"
 import { useDisplay } from 'vuetify'
 import { onMounted, ref } from 'vue'
 import { useGlobalStore } from '@/stores/Global'
+import { Global } from "@/composables/Global"
 
 const globalStore = useGlobalStore()
 
@@ -72,7 +82,11 @@ interface Transcation {
 const transcations = ref<Transcation[]>([])
 
 const beautifyTxHash = (tx: string) => {
-    return tx.slice(0, 15) + "..."
+    return tx.slice(0, 14) + "..."
+}
+
+const beautifyAmount = (amount: number) => {
+    return amount.toFixed(6)
 }
 
 onMounted(() => {
@@ -93,3 +107,10 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.amount-of-money {
+    display: inline;
+    font-weight: 500;
+}
+</style>
