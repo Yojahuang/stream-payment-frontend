@@ -1,4 +1,4 @@
-[
+const StreamPaymentABI = [
   {
     "anonymous": false,
     "inputs": [
@@ -312,3 +312,5 @@
     "type": "function"
   }
 ]
+
+export { StreamPaymentABI }

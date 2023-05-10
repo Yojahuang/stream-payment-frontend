@@ -1,9 +1,7 @@
 import { ethers } from 'ethers'
-import StreamPaymentABI from '@/assets/StreamPayment.json'
-import ERC20ABI from '@/assets/ERC20.json'
+import { StreamPaymentABI } from '@/assets/StreamPayment'
+import { ERC20ABI } from '@/assets/ERC20'
 import Wallet from '@/composables/Wallet'
-import { storeToRefs } from 'pinia'
-import { useGlobalStore } from '@/stores/Global'
 
 export default class StreamPaymentContract {
     address = '0xeB1E5618F28170408cd52b4fF788De6A2B6A8b0D'
@@ -13,8 +11,6 @@ export default class StreamPaymentContract {
     init = () => {
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
-
-        const { selectedChain } = storeToRefs(useGlobalStore())
 
         this.address = '0xeB1E5618F28170408cd52b4fF788De6A2B6A8b0D'
 
@@ -53,8 +49,6 @@ export default class StreamPaymentContract {
         startTime: BigInt,
         endTime: BigInt
     ) => {
-        console.log('in')
-
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
         const signer = provider.getSigner()  // same with payer, but this is an object

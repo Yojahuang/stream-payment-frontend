@@ -102,8 +102,8 @@ const createStream = async () => {
     await streamPaymentContract.approve(paymentDetail.tokenAddress,
         BigInt(paymentDetail.amount))
 
-    const start = new Date(paymentDetail.startAndEndDate[0]).getTime() / 1000
-    const end = new Date(paymentDetail.startAndEndDate[1]).getTime() / 1000
+    const start = Math.floor(new Date(paymentDetail.startAndEndDate[0]).getTime() / 1000)
+    const end = Math.floor(new Date(paymentDetail.startAndEndDate[1]).getTime() / 1000)
     await streamPaymentContract.createStream(paymentDetail.title,
         paymentDetail.payee,
         paymentDetail.tokenAddress,
