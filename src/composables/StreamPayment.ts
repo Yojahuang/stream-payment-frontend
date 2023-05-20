@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { StreamPaymentABI } from '@/assets/abis/StreamPayment'
-import { ERC20ABI } from '@/assets/abis/ERC20'
+import ERC20Contract from '@/composables/Erc20'
 import Wallet from '@/composables/Wallet'
 
 export default class StreamPaymentContract {
@@ -28,17 +28,10 @@ export default class StreamPaymentContract {
     }
 
     approve = async (tokenAddress: string, totalAmount: BigInt) => {
-        const ethereum = (window as any).ethereum
-        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
-        const ERC20Contract = new ethers.Contract(
-            tokenAddress,
-            ERC20ABI,
-            provider
-        )
+        const erc20Contract = new ERC20Contract()
+        erc20Contract.init(tokenAddress)
 
-        const signer = provider.getSigner()
-        const tx = await ERC20Contract.connect(signer).approve(this.address, totalAmount, this.option)
-        await this.waitTx(tx)
+        await erc20Contract.approve(totalAmount)
     }
 
     createStream = async (

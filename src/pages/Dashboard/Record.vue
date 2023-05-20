@@ -10,17 +10,18 @@
                     :model-value="record.withdraw / record.all * 100" color="primary">
                     <v-progress-circular v-if="!smAndDown" :size="340" :width="0"
                         :color="Global.currentThemeIsDark() ? 'white' : 'black'">
-                        You had withdraw: {{ record.withdraw }} DAI <br />
-                        You can still withdraw: {{ (calcClaimeableAmount - record.withdraw).toFixed(2) }} DAI
+                        You had withdraw: {{ record.withdraw }} {{ record.tokenSymbol }} <br />
+                        You can still withdraw: {{ (calcClaimeableAmount - record.withdraw).toFixed(2) }} {{
+                            record.tokenSymbol }}
                     </v-progress-circular>
                 </v-progress-circular>
             </v-progress-circular>
         </div>
 
         <div class="my-2" v-if="smAndDown">
-            You had withdraw: <div class="amount-of-money">{{ record.withdraw }}</div> DAI <br />
+            You had withdraw: <div class="amount-of-money">{{ record.withdraw }}</div> {{ record.tokenSymbol }} <br />
             You can still withdraw: <div class="amount-of-money">{{ (calcClaimeableAmount - record.withdraw).toFixed(2) }}
-            </div> DAI
+            </div> {{ record.tokenSymbol }}
         </div>
 
         <div :class="{ 'my-2': true, 'd-flex': !smAndDown, 'align-center': !smAndDown }">
@@ -51,7 +52,18 @@ const { smAndDown } = useDisplay()
 const recordStore = useRecordStore()
 const router = useRoute()
 const id = Number(router.params.id)
-const record = ref<Stream>({ "id": -1, "title": "-1", "startAt": new Date("2023-05-11T13:14:00.000Z"), "endAt": new Date("2023-05-17T13:14:00.000Z"), "remainToken": 0, "all": 0, "withdraw": 0, "identity": "Creator" })
+const record = ref<Stream>({
+    id: -1,
+    title: "-1",
+    startAt: new Date("2023-05-11T13:14:00.000Z"),
+    endAt: new Date("2023-05-17T13:14:00.000Z"),
+    remainToken: 0,
+    all: 0,
+    withdraw: 0,
+    identity: "Creator",
+    tokenAddress: '',
+    tokenSymbol: 'DAI'
+})
 
 const currentTime = ref(Math.floor(new Date().getTime() / 1000))
 

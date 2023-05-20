@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import Wallet from '@/composables/Wallet'
 import StreamPaymentContract from '@/composables/StreamPayment'
+import ERC20Contract from '@/composables/Erc20'
 
 interface Stream {
     id: number,
@@ -11,7 +12,9 @@ interface Stream {
     remainToken: number,
     all: number,
     withdraw: number,
-    identity: 'Creator' | 'Receiver'
+    identity: 'Creator' | 'Receiver',
+    tokenAddress: string,
+    tokenSymbol: string,
 }
 
 const useRecordStore = defineStore('record', () => {
@@ -23,7 +26,11 @@ const useRecordStore = defineStore('record', () => {
         const wallet = new Wallet()
         const address = wallet.getAddress()
 
-        streams.forEach((stream: any) => {
+        streams.forEach(async (stream: any) => {
+            const erc20Contract = new ERC20Contract();
+            erc20Contract.init(stream.tokenAddress)
+            const symbol = await erc20Contract.symbol()
+
             records.value.push({
                 id: Number(stream.streamID.toString()),
                 title: stream.title,
@@ -32,7 +39,9 @@ const useRecordStore = defineStore('record', () => {
                 remainToken: Number((stream.totalAmount - stream.claimedAmount).toString()),
                 all: Number(stream.totalAmount.toString()),
                 withdraw: Number(stream.claimedAmount.toString()),
-                identity: stream.payer == address ? 'Creator' : 'Receiver'
+                identity: stream.payer == address ? 'Creator' : 'Receiver',
+                tokenAddress: stream.tokenAddress,
+                tokenSymbol: symbol
             })
         })
     }
@@ -60,6 +69,10 @@ const useRecordStore = defineStore('record', () => {
         const wallet = new Wallet()
         const address = wallet.getAddress()
 
+        const erc20Contract = new ERC20Contract();
+        erc20Contract.init(streamInfo.tokenAddress)
+        const symbol = await erc20Contract.symbol()
+
         records.value.push({
             id: Number(streamInfo.streamID.toString()),
             title: streamInfo.title,
@@ -68,7 +81,9 @@ const useRecordStore = defineStore('record', () => {
             remainToken: Number((streamInfo.totalAmount - streamInfo.claimedAmount).toString()),
             all: Number(streamInfo.totalAmount.toString()),
             withdraw: Number(streamInfo.claimedAmount.toString()),
-            identity: streamInfo.payer == address ? 'Creator' : 'Receiver'
+            identity: streamInfo.payer == address ? 'Creator' : 'Receiver',
+            tokenAddress: streamInfo.tokenAddress,
+            tokenSymbol: symbol
         })
 
         result = findStreamById(id)
