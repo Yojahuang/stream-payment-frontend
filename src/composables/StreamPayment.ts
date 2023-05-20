@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
-import { StreamPaymentABI } from '@/assets/StreamPayment'
-import { ERC20ABI } from '@/assets/ERC20'
+import { StreamPaymentABI } from '@/assets/abis/StreamPayment'
+import { ERC20ABI } from '@/assets/abis/ERC20'
 import Wallet from '@/composables/Wallet'
 
 export default class StreamPaymentContract {
