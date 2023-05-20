@@ -118,4 +118,17 @@ export default class StreamPaymentContract {
             .getReceiverStreamInfo()
         return result
     }
+
+    getStreamsInfo = async (id: number) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const signer = provider.getSigner()
+
+        if (signer == null || this.streamPaymentContract == undefined) return
+
+        const result = await this.streamPaymentContract
+            .connect(signer)
+            .streams(id)
+        return result
+    }
 }

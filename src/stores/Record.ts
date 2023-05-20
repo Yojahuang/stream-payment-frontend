@@ -1,9 +1,21 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import Wallet from '@/composables/Wallet'
+import StreamPaymentContract from '@/composables/StreamPayment'
 
-export const useRecordStore = defineStore('record', () => {
-    const records = ref<any[]>([])
+interface Stream {
+    id: number,
+    title: string,
+    startAt: Date,
+    endAt: Date,
+    remainToken: number,
+    all: number,
+    withdraw: number,
+    identity: 'Creator' | 'Receiver'
+}
+
+const useRecordStore = defineStore('record', () => {
+    const records = ref<Stream[]>([])
 
     const fetchStream = async (fetchFn: () => Promise<any>) => {
         const streams: any[] = await fetchFn()
@@ -25,14 +37,47 @@ export const useRecordStore = defineStore('record', () => {
         })
     }
 
-    const getStreamById = (id: number) => {
-        let result
-        records.value.forEach((record: any) => {
+    const findStreamById = (id: number) => {
+        let result: Stream | undefined
+        records.value.forEach((record: Stream) => {
             if (record.id == id) {
                 result = record
             }
         })
+
         return result
+    }
+
+    const getStreamById = async (id: number) => {
+        let result = findStreamById(id)
+        if (result != undefined) return result
+
+
+        const streamPaymentContract = new StreamPaymentContract()
+        streamPaymentContract.init()
+        const streamInfo = await streamPaymentContract.getStreamsInfo(id)
+
+        const wallet = new Wallet()
+        const address = wallet.getAddress()
+
+        records.value.push({
+            id: Number(streamInfo.streamID.toString()),
+            title: streamInfo.title,
+            startAt: new Date(Number(streamInfo.startTime.toString()) * 1000),
+            endAt: new Date(Number(streamInfo.endTime.toString()) * 1000),
+            remainToken: Number((streamInfo.totalAmount - streamInfo.claimedAmount).toString()),
+            all: Number(streamInfo.totalAmount.toString()),
+            withdraw: Number(streamInfo.claimedAmount.toString()),
+            identity: streamInfo.payer == address ? 'Creator' : 'Receiver'
+        })
+
+        result = findStreamById(id)
+        if (result != undefined) return result
+        else {
+            throw Error('Streaminfo not found')
+        }
     }
     return { records, getStreamById, fetchStream }
 })
+
+export { useRecordStore, type Stream }

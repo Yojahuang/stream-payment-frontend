@@ -23,46 +23,12 @@
             </div> DAI
         </div>
 
-        <div>
-            <v-btn prepend-icon="mdi-refresh">Refresh</v-btn>
-        </div>
-
         <div :class="{ 'my-2': true, 'd-flex': !smAndDown, 'align-center': !smAndDown }">
             <v-text-field v-model="claimAmount" label="How much you want to claim" :rules="checkClaimRule"
                 hide-details="auto"></v-text-field>
-            <v-btn @click="claimPayment()" color="primary">Claim payment</v-btn>
+            <v-btn @click="claimPayment()" :disabled="record.identity != 'Receiver'" color="primary">Claim
+                payment</v-btn>
         </div>
-
-        <!-- <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">
-            Transcation history
-        </div>
-
-        <v-card class="overflow-y-auto my-4" max-height="500">
-            <v-table>
-                <thead>
-                    <tr>
-                        <th class="text-left">
-                            Tx hash
-                        </th>
-                        <th class="text-left">
-                            Amount
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="transcation in transcations" :key="transcation.tx">
-                        <td v-if="!smAndDown"><a :href="`${globalStore.getExplorer()}/tx/${transcation.tx}`">{{
-                            transcation.tx
-                        }}</a>
-                        </td>
-                        <td v-else><a :href="`${globalStore.getExplorer()}/tx/${transcation.tx}`">{{
-                            beautifyTxHash(transcation.tx) }}</a>
-                        </td>
-                        <td>{{ beautifyAmount(transcation.amount) }}...</td>
-                    </tr>
-                </tbody>
-            </v-table>
-        </v-card> -->
     </div>
 </template>
 
@@ -71,7 +37,7 @@ import { useRoute } from "vue-router"
 import { useDisplay } from 'vuetify'
 import { onMounted, ref, computed } from 'vue'
 import { storeToRefs } from "pinia"
-import { useRecordStore } from '@/stores/Record'
+import { useRecordStore, Stream } from '@/stores/Record'
 import { useGlobalStore } from '@/stores/Global'
 import { Global } from "@/composables/Global"
 import StreamPaymentContract from '@/composables/StreamPayment'
@@ -85,7 +51,7 @@ const { smAndDown } = useDisplay()
 const recordStore = useRecordStore()
 const router = useRoute()
 const id = Number(router.params.id)
-const record = ref<any>({ "id": -1, "title": "-1", "startAt": new Date("2023-05-11T13:14:00.000Z"), "endAt": new Date("2023-05-17T13:14:00.000Z"), "remainToken": 0, "all": 0, "withdraw": 0, "identity": "Creator" })
+const record = ref<Stream>({ "id": -1, "title": "-1", "startAt": new Date("2023-05-11T13:14:00.000Z"), "endAt": new Date("2023-05-17T13:14:00.000Z"), "remainToken": 0, "all": 0, "withdraw": 0, "identity": "Creator" })
 
 const currentTime = ref(Math.floor(new Date().getTime() / 1000))
 
@@ -95,47 +61,22 @@ setInterval(() => {
 
 const claimAmount = ref(0)
 
-interface Transcation {
-    tx: string;
-    amount: number;
-}
-
-const transcations = ref<Transcation[]>([])
-
-// const beautifyTxHash = (tx: string) => {
-//     return tx.slice(0, 14) + "..."
-// }
-
-// const beautifyAmount = (amount: number) => {
-//     return amount.toFixed(6)
-// }
-
 const calcClaimeableAmount = computed(() => {
     const currentTimeRaw = currentTime.value
     const startTime = Math.floor(record.value.startAt.getTime() / 1000);
     const endTime = Math.floor(record.value.endAt.getTime() / 1000);
 
-    const result = Math.max(record.value.all * (currentTimeRaw - startTime) / (endTime - startTime), 0)
+    let result = Math.max(record.value.all * (currentTimeRaw - startTime) / (endTime - startTime), 0)
+    result = Math.min(result, record.value.all)
 
     return result
 })
 
-onMounted(() => {
-    record.value = recordStore.getStreamById(id)
-
-    for (let i = 0; i < 50; ++i) {
-        let tx = "0x"
-        for (let j = 0; j < 64; ++j) {
-            const validCharacter = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
-            tx = tx + validCharacter[Math.floor(Math.random() * 16)]
-        }
-
-        const amount = Math.random()
-
-        transcations.value.push({
-            tx,
-            amount,
-        })
+onMounted(async () => {
+    try {
+        record.value = await recordStore.getStreamById(id)
+    } catch (error) {
+        alert(error)
     }
 })
 
@@ -158,6 +99,8 @@ const claimPayment = async () => {
 
     await streamPaymentContract.claimPayment(BigInt(id), BigInt(claimAmount.value))
     loadingSemaphore.value -= 1
+
+    window.location.reload()
 }
 </script>
 
