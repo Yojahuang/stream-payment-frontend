@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useRecordStore } from '@/stores/Record'
+import { useStreamStore } from '@/stores/Stream'
 import { useGlobalStore } from '@/stores/Global'
 import { useDisplay } from 'vuetify'
 import { ref, onMounted, reactive, computed } from "vue"
@@ -53,12 +53,12 @@ const tab = ref("Not started")
 
 const { xs } = useDisplay()
 
-const streamStore = useRecordStore()
-const { records } = storeToRefs(useRecordStore())
+const streamStore = useStreamStore()
+const { streams } = storeToRefs(useStreamStore())
 
 const currentRecords = computed(() => {
     const result: any[] = []
-    records.value.forEach((record: any) => {
+    streams.value.forEach((record: any) => {
         if (record.identity == 'Creator' && filter.showCreator) {
             result.push(record)
         } else if (record.identity == 'Receiver' && filter.showReceiver) {
@@ -133,7 +133,7 @@ onMounted(async () => {
     const wallet = new Wallet()
     await wallet.connect()
 
-    records.value = []
+    streams.value = []
     await streamStore.fetchStream(streamPaymentContract.getPayerStreamInfo)
     await streamStore.fetchStream(streamPaymentContract.getReceiverStreamInfo)
 

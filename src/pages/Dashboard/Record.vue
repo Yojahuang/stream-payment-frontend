@@ -1,33 +1,33 @@
 <template>
     <div :class="{ 'w-75': !smAndDown, 'w-full': smAndDown, 'mx-auto': true }">
         <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">
-            {{ record.title }}
+            {{ stream.title }}
         </div>
         <div class="d-flex mx-auto align-center justify-center my-2">
             <v-progress-circular :size="smAndDown ? 250 : 400" :width="15"
-                :model-value="(calcClaimeableAmount) / record.all * 100" color="secondary">
+                :model-value="(calcClaimeableAmount) / stream.all * 100" color="secondary">
                 <v-progress-circular :size="smAndDown ? 220 : 370" :width="15"
-                    :model-value="record.withdraw / record.all * 100" color="primary">
+                    :model-value="stream.withdraw / stream.all * 100" color="primary">
                     <v-progress-circular v-if="!smAndDown" :size="340" :width="0"
                         :color="Global.currentThemeIsDark() ? 'white' : 'black'">
-                        You had withdraw: {{ record.withdraw }} {{ record.tokenSymbol }} <br />
-                        You can still withdraw: {{ (calcClaimeableAmount - record.withdraw).toFixed(2) }} {{
-                            record.tokenSymbol }}
+                        You had withdraw: {{ stream.withdraw }} {{ stream.tokenSymbol }} <br />
+                        You can still withdraw: {{ (calcClaimeableAmount - stream.withdraw).toFixed(2) }} {{
+                            stream.tokenSymbol }}
                     </v-progress-circular>
                 </v-progress-circular>
             </v-progress-circular>
         </div>
 
         <div class="my-2" v-if="smAndDown">
-            You had withdraw: <div class="amount-of-money">{{ record.withdraw }}</div> {{ record.tokenSymbol }} <br />
-            You can still withdraw: <div class="amount-of-money">{{ (calcClaimeableAmount - record.withdraw).toFixed(2) }}
-            </div> {{ record.tokenSymbol }}
+            You had withdraw: <div class="amount-of-money">{{ stream.withdraw }}</div> {{ stream.tokenSymbol }} <br />
+            You can still withdraw: <div class="amount-of-money">{{ (calcClaimeableAmount - stream.withdraw).toFixed(2) }}
+            </div> {{ stream.tokenSymbol }}
         </div>
 
         <div :class="{ 'my-2': true, 'd-flex': !smAndDown, 'align-center': !smAndDown }">
             <v-text-field v-model="claimAmount" label="How much you want to claim" :rules="checkClaimRule"
                 hide-details="auto"></v-text-field>
-            <v-btn @click="claimPayment()" :disabled="record.identity != 'Receiver'" color="primary">Claim
+            <v-btn @click="claimPayment()" :disabled="stream.identity != 'Receiver'" color="primary">Claim
                 payment</v-btn>
         </div>
     </div>
@@ -38,7 +38,7 @@ import { useRoute } from "vue-router"
 import { useDisplay } from 'vuetify'
 import { onMounted, ref, computed } from 'vue'
 import { storeToRefs } from "pinia"
-import { useRecordStore, Stream } from '@/stores/Record'
+import { useStreamStore, Stream } from '@/stores/Stream'
 import { useGlobalStore } from '@/stores/Global'
 import { Global } from "@/composables/Global"
 import StreamPaymentContract from '@/composables/StreamPayment'
@@ -49,10 +49,10 @@ const { loadingSemaphore } = storeToRefs(globalStore)
 
 const { smAndDown } = useDisplay()
 
-const recordStore = useRecordStore()
+const streamStore = useStreamStore()
 const router = useRoute()
 const id = Number(router.params.id)
-const record = ref<Stream>({
+const stream = ref<Stream>({
     id: -1,
     title: "-1",
     startAt: new Date("2023-05-11T13:14:00.000Z"),
@@ -75,18 +75,18 @@ const claimAmount = ref(0)
 
 const calcClaimeableAmount = computed(() => {
     const currentTimeRaw = currentTime.value
-    const startTime = Math.floor(record.value.startAt.getTime() / 1000);
-    const endTime = Math.floor(record.value.endAt.getTime() / 1000);
+    const startTime = Math.floor(stream.value.startAt.getTime() / 1000);
+    const endTime = Math.floor(stream.value.endAt.getTime() / 1000);
 
-    let result = Math.max(record.value.all * (currentTimeRaw - startTime) / (endTime - startTime), 0)
-    result = Math.min(result, record.value.all)
+    let result = Math.max(stream.value.all * (currentTimeRaw - startTime) / (endTime - startTime), 0)
+    result = Math.min(result, stream.value.all)
 
     return result
 })
 
 onMounted(async () => {
     try {
-        record.value = await recordStore.getStreamById(id)
+        stream.value = await streamStore.getStreamById(id)
     } catch (error) {
         alert(error)
     }

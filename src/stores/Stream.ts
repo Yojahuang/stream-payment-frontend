@@ -17,21 +17,21 @@ interface Stream {
     tokenSymbol: string,
 }
 
-const useRecordStore = defineStore('record', () => {
-    const records = ref<Stream[]>([])
+const useStreamStore = defineStore('stream', () => {
+    const streams = ref<Stream[]>([])
 
     const fetchStream = async (fetchFn: () => Promise<any>) => {
-        const streams: any[] = await fetchFn()
+        const fetchStreams: any[] = await fetchFn()
 
         const wallet = new Wallet()
         const address = wallet.getAddress()
 
-        streams.forEach(async (stream: any) => {
+        fetchStreams.forEach(async (stream: any) => {
             const erc20Contract = new ERC20Contract();
             erc20Contract.init(stream.tokenAddress)
             const symbol = await erc20Contract.symbol()
 
-            records.value.push({
+            streams.value.push({
                 id: Number(stream.streamID.toString()),
                 title: stream.title,
                 startAt: new Date(Number(stream.startTime.toString()) * 1000),
@@ -48,7 +48,7 @@ const useRecordStore = defineStore('record', () => {
 
     const findStreamById = (id: number) => {
         let result: Stream | undefined
-        records.value.forEach((record: Stream) => {
+        streams.value.forEach((record: Stream) => {
             if (record.id == id) {
                 result = record
             }
@@ -73,7 +73,7 @@ const useRecordStore = defineStore('record', () => {
         erc20Contract.init(streamInfo.tokenAddress)
         const symbol = await erc20Contract.symbol()
 
-        records.value.push({
+        streams.value.push({
             id: Number(streamInfo.streamID.toString()),
             title: streamInfo.title,
             startAt: new Date(Number(streamInfo.startTime.toString()) * 1000),
@@ -92,7 +92,7 @@ const useRecordStore = defineStore('record', () => {
             throw Error('Streaminfo not found')
         }
     }
-    return { records, getStreamById, fetchStream }
+    return { streams, getStreamById, fetchStream }
 })
 
-export { useRecordStore, type Stream }
+export { useStreamStore, type Stream }
