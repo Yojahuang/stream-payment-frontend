@@ -48,8 +48,12 @@ import StreamPaymentContract from "@/composables/StreamPayment"
 const { smAndDown } = useDisplay()
 
 onMounted(async () => {
-    const wallet = new Wallet()
-    await wallet.connect()
+    try {
+        const wallet = new Wallet()
+        await wallet.connect()
+    } catch (error) {
+        alert(`${error}`)
+    }
 })
 
 const paymentDetail = reactive({

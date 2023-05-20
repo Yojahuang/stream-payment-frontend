@@ -8,6 +8,16 @@ export default class Wallet {
     address = ref<string>('')
 
     connect = async () => {
+        try {
+            const ethereum = (window as any).ethereum
+            const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+
+            // MetaMask requires requesting permission to connect users accounts
+            await provider.send('eth_requestAccounts', [])
+        } catch {
+            throw Error('Metamask not detected!')
+        }
+
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
 
@@ -17,9 +27,6 @@ export default class Wallet {
         const { selectedChain } = storeToRefs(globalStore)
 
         const chainMap = toRaw(globalStore.chainInfoMap)
-
-        // MetaMask requires requesting permission to connect users accounts
-        await provider.send('eth_requestAccounts', [])
 
         const chainInfo = chainMap[selectedChain.value]
 

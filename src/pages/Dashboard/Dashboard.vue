@@ -124,14 +124,17 @@ const filter = reactive({
 })
 
 onMounted(async () => {
+    try {
+        const wallet = new Wallet()
+        await wallet.connect()
+    } catch (error) {
+        alert(`${error}`)
+    }
+
     const streamPaymentContract = new StreamPaymentContract()
     streamPaymentContract.init()
 
     loadingSemaphore.value += 1
-
-
-    const wallet = new Wallet()
-    await wallet.connect()
 
     streams.value = []
     await streamStore.fetchStream(streamPaymentContract.getPayerStreamInfo)
