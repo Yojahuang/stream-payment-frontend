@@ -4,7 +4,7 @@ import ERC20Contract from '@/composables/Erc20'
 import Wallet from '@/composables/Wallet'
 
 export default class StreamPaymentContract {
-    address = '0xeB1E5618F28170408cd52b4fF788De6A2B6A8b0D'
+    address = '0x3D3EB6207a1965D4809c1C37713b1c5850E548d3'
     streamPaymentContract: ethers.Contract | undefined = undefined
     option = { gasLimit: 20_000_000 }
 
@@ -12,7 +12,7 @@ export default class StreamPaymentContract {
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
 
-        this.address = '0xeB1E5618F28170408cd52b4fF788De6A2B6A8b0D'
+        this.address = '0x3D3EB6207a1965D4809c1C37713b1c5850E548d3'
 
         if (provider != null)
             this.streamPaymentContract = new ethers.Contract(
@@ -31,7 +31,7 @@ export default class StreamPaymentContract {
         const erc20Contract = new ERC20Contract()
         erc20Contract.init(tokenAddress)
 
-        await erc20Contract.approve(totalAmount)
+        await erc20Contract.approve(this.address, totalAmount)
     }
 
     createStream = async (
@@ -122,6 +122,19 @@ export default class StreamPaymentContract {
         const result = await this.streamPaymentContract
             .connect(signer)
             .streams(id)
+        return result
+    }
+
+    getStreamsPenalty = async (id: number) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const signer = provider.getSigner()
+
+        if (signer == null || this.streamPaymentContract == undefined) return
+
+        const result = await this.streamPaymentContract
+            .connect(signer)
+            .penalties(id)
         return result
     }
 }

@@ -25,14 +25,14 @@ export default class ERC20Contract {
         console.log(receipt)
     }
 
-    approve = async (totalAmount: BigInt) => {
+    approve = async (to: string, totalAmount: BigInt) => {
         if (this.ERC20Contract == undefined) return
 
         const ethereum = (window as any).ethereum
         const provider = new ethers.providers.Web3Provider(ethereum, 'any')
 
         const signer = provider.getSigner()
-        const tx = await this.ERC20Contract.connect(signer).approve(this.address, totalAmount, this.option)
+        const tx = await this.ERC20Contract.connect(signer).approve(to, totalAmount, this.option)
         await this.waitTx(tx)
     }
 
