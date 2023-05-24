@@ -8,6 +8,7 @@ interface Penalty {
     startTime: number,
     endTime: number,
     status: string,
+    amount: number,
     id: number,
 }
 
@@ -17,6 +18,7 @@ interface Stream {
     startAt: Date,
     endAt: Date,
     remainToken: number,
+    totalPenaltyAmount: number,
     all: number,
     withdraw: number,
     identity: 'Creator' | 'Receiver',
@@ -38,10 +40,14 @@ const useStreamStore = defineStore('stream', () => {
         const address = wallet.getAddress()
 
         fetchStreams.forEach(async (stream: any) => {
+            console.log(stream)
+
             const erc20Contract = new ERC20Contract();
             erc20Contract.init(stream.tokenAddress)
             const symbol = await erc20Contract.symbol()
             const id = Number(stream.streamID.toString())
+
+            const totalPenaltyAmount = await streamPaymentContract.getTotalPenalty(BigInt(id))
 
             const penalties = await streamPaymentContract.getStreamsPenalty(id)
 
@@ -51,6 +57,7 @@ const useStreamStore = defineStore('stream', () => {
                 startAt: new Date(Number(stream.startTime.toString()) * 1000),
                 endAt: new Date(Number(stream.endTime.toString()) * 1000),
                 remainToken: Number((stream.totalAmount - stream.claimedAmount).toString()),
+                totalPenaltyAmount,
                 all: Number(stream.totalAmount.toString()),
                 withdraw: Number(stream.claimedAmount.toString()),
                 identity: stream.payer == address ? 'Creator' : 'Receiver',
@@ -90,12 +97,15 @@ const useStreamStore = defineStore('stream', () => {
 
         const penalties = await streamPaymentContract.getStreamsPenalty(id)
 
+        const totalPenaltyAmount = await streamPaymentContract.getTotalPenalty(BigInt(id))
+
         streams.value.push({
             id: Number(streamInfo.streamID.toString()),
             title: streamInfo.title,
             startAt: new Date(Number(streamInfo.startTime.toString()) * 1000),
             endAt: new Date(Number(streamInfo.endTime.toString()) * 1000),
             remainToken: Number((streamInfo.totalAmount - streamInfo.claimedAmount).toString()),
+            totalPenaltyAmount: Number(totalPenaltyAmount.toString()),
             all: Number(streamInfo.totalAmount.toString()),
             withdraw: Number(streamInfo.claimedAmount.toString()),
             identity: streamInfo.payer == address ? 'Creator' : 'Receiver',

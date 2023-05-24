@@ -145,8 +145,11 @@ export default class StreamPaymentContract {
                 .connect(signer)
                 .penalties(id, i)
 
+            const amount = await this.streamPaymentContract.connect(signer).penaltyAmount(id, i)
+
             result.push({
                 id: i,
+                amount: Number(amount.toString()),
                 startTime: Number(returnValue.startTime.toString()),
                 endTime: Number(returnValue.endTime.toString()),
                 status: returnValue.status
@@ -206,5 +209,20 @@ export default class StreamPaymentContract {
                 this.option
             )
         await this.waitTx(tx)
+    }
+
+    getTotalPenalty = async (streamID: BigInt) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const signer = provider.getSigner()
+
+        if (signer == null || this.streamPaymentContract == undefined) return
+
+        return await this.streamPaymentContract
+            .connect(signer)
+            .totalPenaltyAmount(
+                streamID,
+                this.option
+            )
     }
 }

@@ -53,6 +53,9 @@
                         Status
                     </th>
                     <th class="text-left">
+                        Amount
+                    </th>
+                    <th class="text-left">
                         Actions
                     </th>
                 </tr>
@@ -62,6 +65,7 @@
                     <td>{{ Global.beautifyDateTime(new Date(penalty.startTime * 1000)) }}</td>
                     <td>{{ Global.beautifyDateTime(new Date(penalty.endTime * 1000)) }}</td>
                     <td>{{ penalty.status }}</td>
+                    <td>{{ penalty.amount }}</td>
                     <td>
                         <v-btn class="mr-2" @click="admitPenalty(penalty.id)" :disabled="stream.identity != 'Receiver'"
                             color="primary">Admit</v-btn>
@@ -100,6 +104,7 @@ const stream = ref<Stream>({
     startAt: new Date("2023-05-11T13:14:00.000Z"),
     endAt: new Date("2023-05-17T13:14:00.000Z"),
     remainToken: 0,
+    totalPenaltyAmount: 0,
     all: 0,
     withdraw: 0,
     identity: "Creator",
@@ -129,7 +134,7 @@ const calcClaimeableAmount = computed(() => {
     const startTime = Math.floor(stream.value.startAt.getTime() / 1000);
     const endTime = Math.floor(stream.value.endAt.getTime() / 1000);
 
-    let result = Math.max(stream.value.all * (currentTimeRaw - startTime) / (endTime - startTime), 0)
+    let result = Math.max(stream.value.all * (currentTimeRaw - startTime) / (endTime - startTime) - stream.value.totalPenaltyAmount, 0)
     result = Math.min(result, stream.value.all)
 
     return result
