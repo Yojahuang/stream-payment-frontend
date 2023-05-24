@@ -15,12 +15,16 @@ interface Stream {
     identity: 'Creator' | 'Receiver',
     tokenAddress: string,
     tokenSymbol: string,
+    penalties: any[],
 }
 
 const useStreamStore = defineStore('stream', () => {
     const streams = ref<Stream[]>([])
 
     const fetchStream = async (fetchFn: () => Promise<any>) => {
+        const streamPaymentContract = new StreamPaymentContract()
+        streamPaymentContract.init()
+
         const fetchStreams: any[] = await fetchFn()
 
         const wallet = new Wallet()
@@ -30,9 +34,12 @@ const useStreamStore = defineStore('stream', () => {
             const erc20Contract = new ERC20Contract();
             erc20Contract.init(stream.tokenAddress)
             const symbol = await erc20Contract.symbol()
+            const id = Number(stream.streamID.toString())
+
+            const penalties = await streamPaymentContract.getStreamsPenalty(id)
 
             streams.value.push({
-                id: Number(stream.streamID.toString()),
+                id: id,
                 title: stream.title,
                 startAt: new Date(Number(stream.startTime.toString()) * 1000),
                 endAt: new Date(Number(stream.endTime.toString()) * 1000),
@@ -41,7 +48,8 @@ const useStreamStore = defineStore('stream', () => {
                 withdraw: Number(stream.claimedAmount.toString()),
                 identity: stream.payer == address ? 'Creator' : 'Receiver',
                 tokenAddress: stream.tokenAddress,
-                tokenSymbol: symbol
+                tokenSymbol: symbol,
+                penalties: penalties ? penalties : []
             })
         })
     }
@@ -73,6 +81,8 @@ const useStreamStore = defineStore('stream', () => {
         erc20Contract.init(streamInfo.tokenAddress)
         const symbol = await erc20Contract.symbol()
 
+        const penalties = await streamPaymentContract.getStreamsPenalty(id)
+
         streams.value.push({
             id: Number(streamInfo.streamID.toString()),
             title: streamInfo.title,
@@ -83,7 +93,8 @@ const useStreamStore = defineStore('stream', () => {
             withdraw: Number(streamInfo.claimedAmount.toString()),
             identity: streamInfo.payer == address ? 'Creator' : 'Receiver',
             tokenAddress: streamInfo.tokenAddress,
-            tokenSymbol: symbol
+            tokenSymbol: symbol,
+            penalties: penalties ? penalties : []
         })
 
         result = findStreamById(id)

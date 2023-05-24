@@ -132,9 +132,19 @@ export default class StreamPaymentContract {
 
         if (signer == null || this.streamPaymentContract == undefined) return
 
-        const result = await this.streamPaymentContract
+        const penaltyLength = await this.streamPaymentContract
             .connect(signer)
-            .penalties(id)
+            .penaltyLength(id)
+
+        const result = []
+
+        for (let i = 0; i < penaltyLength; ++i) {
+            const returnValue = await this.streamPaymentContract
+                .connect(signer)
+                .penalties(id)
+            result.push(returnValue)
+        }
+
         return result
     }
 }
