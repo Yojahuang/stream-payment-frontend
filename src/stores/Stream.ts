@@ -4,6 +4,13 @@ import Wallet from '@/composables/Wallet'
 import StreamPaymentContract from '@/composables/StreamPayment'
 import ERC20Contract from '@/composables/Erc20'
 
+interface Penalty {
+    startTime: number,
+    endTime: number,
+    status: string,
+    id: number,
+}
+
 interface Stream {
     id: number,
     title: string,
@@ -15,7 +22,7 @@ interface Stream {
     identity: 'Creator' | 'Receiver',
     tokenAddress: string,
     tokenSymbol: string,
-    penalties: any[],
+    penalties: Penalty[],
 }
 
 const useStreamStore = defineStore('stream', () => {

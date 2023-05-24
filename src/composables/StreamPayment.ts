@@ -132,19 +132,79 @@ export default class StreamPaymentContract {
 
         if (signer == null || this.streamPaymentContract == undefined) return
 
-        const penaltyLength = await this.streamPaymentContract
+        const penaltyLengthBigInt = await this.streamPaymentContract
             .connect(signer)
             .penaltyLength(id)
+
+        const penaltyLength = Number(penaltyLengthBigInt.toString())
 
         const result = []
 
         for (let i = 0; i < penaltyLength; ++i) {
             const returnValue = await this.streamPaymentContract
                 .connect(signer)
-                .penalties(id)
-            result.push(returnValue)
+                .penalties(id, i)
+
+            result.push({
+                id: i,
+                startTime: Number(returnValue.startTime.toString()),
+                endTime: Number(returnValue.endTime.toString()),
+                status: returnValue.status
+            })
         }
 
         return result
+    }
+
+    addPenalty = async (id: BigInt, startTime: BigInt, endTime: BigInt) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const signer = provider.getSigner()
+
+        if (signer == null || this.streamPaymentContract == undefined) return
+
+        const tx = await this.streamPaymentContract
+            .connect(signer)
+            .addPenalty(
+                id,
+                startTime,
+                endTime,
+                this.option
+            )
+        await this.waitTx(tx)
+    }
+
+    admitPenalty = async (streamID: BigInt, penaltyID: BigInt) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const signer = provider.getSigner()
+
+        if (signer == null || this.streamPaymentContract == undefined) return
+
+        const tx = await this.streamPaymentContract
+            .connect(signer)
+            .admitPenalty(
+                streamID,
+                penaltyID,
+                this.option
+            )
+        await this.waitTx(tx)
+    }
+
+    denyPenalty = async (streamID: BigInt, penaltyID: BigInt) => {
+        const ethereum = (window as any).ethereum
+        const provider = new ethers.providers.Web3Provider(ethereum, 'any')
+        const signer = provider.getSigner()
+
+        if (signer == null || this.streamPaymentContract == undefined) return
+
+        const tx = await this.streamPaymentContract
+            .connect(signer)
+            .denyPenalty(
+                streamID,
+                penaltyID,
+                this.option
+            )
+        await this.waitTx(tx)
     }
 }

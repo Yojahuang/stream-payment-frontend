@@ -30,6 +30,47 @@
             <v-btn @click="claimPayment()" :disabled="stream.identity != 'Receiver'" color="primary">Claim
                 payment</v-btn>
         </div>
+
+        <div :class="{ 'my-2': true, 'd-flex': !smAndDown, 'align-center': !smAndDown }">
+            <VueDatePicker v-model="penalty.startAndEndDate" range :dark="isDark" />
+            <v-btn @click="addPenalty()" :disabled="stream.identity != 'Creator'" color="primary">Add Penalty</v-btn>
+        </div>
+
+        <div class="text-h5 text-md-h4 text-lg-h4 my-2 font-weight-medium">Penalties</div>
+    </div>
+
+    <div class="w-75 overflow-x-auto mx-auto">
+        <v-table fixed-header height="200px">
+            <thead>
+                <tr>
+                    <th class="text-left">
+                        From
+                    </th>
+                    <th class="text-left">
+                        To
+                    </th>
+                    <th class="text-left">
+                        Status
+                    </th>
+                    <th class="text-left">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="penalty in stream.penalties">
+                    <td>{{ Global.beautifyDateTime(new Date(penalty.startTime * 1000)) }}</td>
+                    <td>{{ Global.beautifyDateTime(new Date(penalty.endTime * 1000)) }}</td>
+                    <td>{{ penalty.status }}</td>
+                    <td>
+                        <v-btn class="mr-2" @click="admitPenalty(penalty.id)" :disabled="stream.identity != 'Receiver'"
+                            color="primary">Admit</v-btn>
+                        <v-btn class="mx-2" @click="denyPenalty(penalty.id)" :disabled="stream.identity != 'Receiver'"
+                            color="error">Dispute</v-btn>
+                    </td>
+                </tr>
+            </tbody>
+        </v-table>
     </div>
 </template>
 
@@ -42,6 +83,7 @@ import { useStreamStore, Stream } from '@/stores/Stream'
 import { useGlobalStore } from '@/stores/Global'
 import { Global } from "@/composables/Global"
 import StreamPaymentContract from '@/composables/StreamPayment'
+import { reactive } from "vue"
 
 const globalStore = useGlobalStore()
 const { loadingSemaphore } = storeToRefs(globalStore)
@@ -62,7 +104,12 @@ const stream = ref<Stream>({
     withdraw: 0,
     identity: "Creator",
     tokenAddress: '',
-    tokenSymbol: 'DAI'
+    tokenSymbol: 'DAI',
+    penalties: []
+})
+
+const isDark = computed(() => {
+    return Global.currentThemeIsDark()
 })
 
 const currentTime = ref(Math.floor(new Date().getTime() / 1000))
@@ -70,6 +117,10 @@ const currentTime = ref(Math.floor(new Date().getTime() / 1000))
 setInterval(() => {
     currentTime.value = Math.floor(new Date().getTime() / 1000);
 }, 1000)
+
+const penalty = reactive({
+    startAndEndDate: ["", ""]
+})
 
 const claimAmount = ref(0)
 
@@ -102,6 +153,45 @@ const checkClaimRule = [
         return true
     }
 ]
+
+const addPenalty = async () => {
+    loadingSemaphore.value += 1
+
+    const streamPaymentContract = new StreamPaymentContract()
+    streamPaymentContract.init()
+
+    const start = Math.floor(new Date(penalty.startAndEndDate[0]).getTime() / 1000)
+    const end = Math.floor(new Date(penalty.startAndEndDate[1]).getTime() / 1000)
+
+    await streamPaymentContract.addPenalty(BigInt(id), BigInt(start), BigInt(end))
+    loadingSemaphore.value -= 1
+
+    window.location.reload()
+}
+
+const admitPenalty = async (penaltyID: number) => {
+    loadingSemaphore.value += 1
+
+    const streamPaymentContract = new StreamPaymentContract()
+    streamPaymentContract.init()
+
+    await streamPaymentContract.admitPenalty(BigInt(id), BigInt(penaltyID))
+    loadingSemaphore.value -= 1
+
+    window.location.reload()
+}
+
+const denyPenalty = async (penaltyID: number) => {
+    loadingSemaphore.value += 1
+
+    const streamPaymentContract = new StreamPaymentContract()
+    streamPaymentContract.init()
+
+    await streamPaymentContract.denyPenalty(BigInt(id), BigInt(penaltyID))
+    loadingSemaphore.value -= 1
+
+    window.location.reload()
+}
 
 const claimPayment = async () => {
     loadingSemaphore.value += 1
