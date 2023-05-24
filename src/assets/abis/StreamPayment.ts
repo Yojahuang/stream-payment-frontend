@@ -4,6 +4,31 @@ const StreamPaymentABI = [
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimPaymentEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "",
         "type": "address"
@@ -15,8 +40,62 @@ const StreamPaymentABI = [
         "type": "uint256"
       }
     ],
-    "name": "StreamCreated",
+    "name": "createStreamEvent",
     "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "terminatePaymentEvent",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "streamID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "addPenalty",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "streamID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "penaltyID",
+        "type": "uint256"
+      }
+    ],
+    "name": "admitPenalty",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [
@@ -88,13 +167,25 @@ const StreamPaymentABI = [
       }
     ],
     "name": "createStream",
-    "outputs": [
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "streamID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "penaltyID",
         "type": "uint256"
       }
     ],
+    "name": "denyPenalty",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -136,6 +227,11 @@ const StreamPaymentABI = [
           },
           {
             "internalType": "uint256",
+            "name": "partialAmountAbleToClaim",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
             "name": "validClaimAmount",
             "type": "uint256"
           },
@@ -153,9 +249,14 @@ const StreamPaymentABI = [
             "internalType": "uint256",
             "name": "streamID",
             "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "terminatedHalfway",
+            "type": "bool"
           }
         ],
-        "internalType": "struct StreamPayment.Stream[]",
+        "internalType": "struct Stream[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -201,6 +302,11 @@ const StreamPaymentABI = [
           },
           {
             "internalType": "uint256",
+            "name": "partialAmountAbleToClaim",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
             "name": "validClaimAmount",
             "type": "uint256"
           },
@@ -218,9 +324,14 @@ const StreamPaymentABI = [
             "internalType": "uint256",
             "name": "streamID",
             "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "terminatedHalfway",
+            "type": "bool"
           }
         ],
-        "internalType": "struct StreamPayment.Stream[]",
+        "internalType": "struct Stream[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -289,6 +400,11 @@ const StreamPaymentABI = [
       },
       {
         "internalType": "uint256",
+        "name": "partialAmountAbleToClaim",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "validClaimAmount",
         "type": "uint256"
       },
@@ -306,9 +422,27 @@ const StreamPaymentABI = [
         "internalType": "uint256",
         "name": "streamID",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "terminatedHalfway",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "streamID",
+        "type": "uint256"
+      }
+    ],
+    "name": "terminatePayment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]
