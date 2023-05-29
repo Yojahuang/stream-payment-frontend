@@ -6,7 +6,7 @@
         <div class="text-center text-h3 my-4">About us</div>
         <div class="d-flex w-full align-center justify-center mx-auto">
             <Avatar class="mx-10" fullname="You-Jia Huang" filename="avatars/YJH-avatar.jpeg" nickname="Yojahuang"
-                jobTitle="Frontend Developer" githubLink="https://github.com/Yojahuang"></Avatar>
+                jobTitle="Frontend & Smart Contract Developer" githubLink="https://github.com/Yojahuang"></Avatar>
             <Avatar class="mx-10" fullname="Pei-Fan Chen" filename="avatars/PFC-avatar.jpg" nickname="yoonaiu"
                 jobTitle="Smart Contract Developer" githubLink="https://github.com/yoonaiu"></Avatar>
         </div>

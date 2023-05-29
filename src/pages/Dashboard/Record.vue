@@ -10,8 +10,8 @@
                     :model-value="stream.withdraw / stream.all * 100" color="primary">
                     <v-progress-circular v-if="!smAndDown" :size="340" :width="0"
                         :color="Global.currentThemeIsDark() ? 'white' : 'black'">
-                        You had withdraw: {{ stream.withdraw }} {{ stream.tokenSymbol }} <br />
-                        You can still withdraw: {{ (calcClaimeableAmount - stream.withdraw).toFixed(2) }} {{
+                        Receiver had withdraw: {{ stream.withdraw }} {{ stream.tokenSymbol }} <br />
+                        Receiver can still withdraw: {{ (calcClaimeableAmount - stream.withdraw).toFixed(2) }} {{
                             stream.tokenSymbol }}
                     </v-progress-circular>
                 </v-progress-circular>
@@ -135,7 +135,7 @@ const calcClaimeableAmount = computed(() => {
     const endTime = Math.floor(stream.value.endAt.getTime() / 1000);
 
     let result = Math.max(stream.value.all * (currentTimeRaw - startTime) / (endTime - startTime) - stream.value.totalPenaltyAmount, 0)
-    result = Math.min(result, stream.value.all)
+    result = Math.min(result, stream.value.all - stream.value.totalPenaltyAmount)
 
     return result
 })
